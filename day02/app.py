@@ -4,52 +4,59 @@ from typing import ChainMap
 
 
 def parse_input(line):
-    challenger = line.split()[0]
-    user = line.split()[1]
+    challenger_input = line.split()[0]
+    user_input = line.split()[1]
 
-    translation_map = {
-        'X': 'A',
-        'Y': 'B',
-        'Z': 'C'
+    desired_outcome_map = {
+        'X': 'Loss',
+        'Y': 'Draw',
+        'Z': 'Win'
     }
 
-    user_translated = translation_map[user]
+    desired_outcome = desired_outcome_map[user_input]
 
-    return user_translated, challenger
+    return desired_outcome, challenger_input
 
 
-def round(user, challenger):
+def round(desired_outcome, challenger):
 
     winner_condition = {
-        'A': ['C', 1],
-        'B': ['A', 2],
-        'C': ['B', 3]
+        'A': 'B',
+        'B': 'C',
+        'C': 'A'
     }
 
-    challenger_loss = winner_condition[user]
+    strategy_points = {
+        'A': 1,
+        'B': 2,
+        'C': 3
+    }
 
     points = 0
 
-    if user == challenger:
-        result = 'Draw'
-        points = 3 + winner_condition[user][1]
-        return result, points
-    elif challenger in challenger_loss:
-        result = 'Win'
-        points = 6 + winner_condition[user][1]
-        return result, points
+    if desired_outcome == 'Draw':
+        points = 3 + strategy_points[challenger]
+        return desired_outcome, points
+
+    elif desired_outcome == 'Win':
+        winner_strategy = winner_condition[challenger]
+        points = 6 + strategy_points[winner_strategy]
+        return desired_outcome, points
+
     else:
-        result = 'Loss'
-        points = winner_condition[user][1]
-        return result, points
+        losing_strategy = [
+            k for k, v in winner_condition.items() if v == challenger][0]
+        points = strategy_points[losing_strategy]
+        return desired_outcome, points
 
 
 def main():
     with open('test_data.txt', mode='r', encoding='utf-8') as file:
         score = 0
         for line in file:
-            user, challenger = parse_input(line)
-            result, points = round(user, challenger)
+            desired_outcome, challenger = parse_input(line)
+            result, points = round(desired_outcome, challenger)
+            print(result, points)
             score += points
 
     print(score)
@@ -57,16 +64,17 @@ def main():
 
 
 def test_result():
-    assert main() == 15
+    assert main() == 12
+
+
+def test_parse_input():
+    assert parse_input('A Y') == ('Draw', 'A')
 
 
 def test_round():
-    assert round("B", "A") == ('Win', 8)
-    assert round("A", "A") == ('Draw', 4)
-    assert round("C", "A") == ('Loss', 3)
-    assert round("C", "B") == ('Win', 9)
-    assert round("B", "B") == ('Draw', 5)
-    assert round("A", "B") == ('Loss', 1)
+    assert round('Draw', 'A') == ('Draw', 4)
+    assert round('Loss', 'B') == ('Loss', 1)
+    assert round('Win', 'C') == ('Win', 7)
 
 
 if __name__ == "__main__":
