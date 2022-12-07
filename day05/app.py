@@ -1,31 +1,41 @@
 #!/usr/bin/env python
 
-import csv
+import pytest
 
 
-def parse_stack_headers():
-    with open('test_data.txt', mode='r', encoding='utf-8') as file_data:
-        for line in file_data:
-            if line != '\n':
-                previous_line = line.strip()
-            elif line == '\n':
-                break
+def read_input():
+    file_data = open('test_data.txt', mode='r', encoding='utf-8')
+    return file_data
 
-        stack_headers = list(
-            filter(None, [x.strip(' ') for x in previous_line]))
 
-        result = [int(x) for x in stack_headers]
+def parse_stack_headers(input_data):
+    for line in input_data:
+        if line != '\n':
+            previous_line = line.strip()
+        elif line == '\n':
+            break
 
-        return result
+    stack_headers = list(
+        filter(None, [x.strip(' ') for x in previous_line]))
+
+    result = [int(x) for x in stack_headers]
+
+    return result
 
 
 def main():
-    parse_stack_headers()
+    input_data = read_input()
+    parse_stack_headers(input_data=input_data)
 
 
 if __name__ == "__main__":
     main()
 
 
-def test_parse_stack_headers():
-    assert parse_stack_headers() == ([1, 2, 3])
+@pytest.fixture
+def test_data():
+    return read_input()
+
+
+def test_parse_stack_headers(test_data):
+    assert parse_stack_headers(test_data) == ([1, 2, 3])
