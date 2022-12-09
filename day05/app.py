@@ -35,14 +35,14 @@ def parse_rearrangement_procedures(input_data):
 def move_crates(stacks, procedures):
 
     for procedure in procedures:
-        crate_index = stacks[procedure[1]].index(
-            stacks[procedure[1]][procedure[0] - 1])
-        print(crate_index)
+        print(procedure)
+        for i in range(procedure[0]):
+            box_index = stacks[procedure[1] -
+                               1].index(stacks[procedure[1] - 1][0])
+            stacks[procedure[2] -
+                   1].insert(0, stacks[procedure[1] - 1].pop(box_index))
 
-        stacks[procedure[2] - 1].insert(
-            0, stacks[procedure[1] - 1].pop(crate_index))
-
-        print(stacks)
+        return stacks
 
 
 def main():
@@ -53,7 +53,7 @@ def main():
 
     procedures = parse_rearrangement_procedures(input_data)
 
-    move_crates(stacks, procedures)
+    print(move_crates(stacks, procedures))
 
 
 if __name__ == "__main__":
