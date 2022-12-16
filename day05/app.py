@@ -16,7 +16,7 @@ def create_stacks(input_data):
         else:
             break
 
-    rows_to_columns = [list(x) for x in zip(*list_of_stacks)]
+    rows_to_columns = [list(x) for x in zip(*list_of_stacks[:-1])]
     for row in rows_to_columns:
         result.append([x for x in row if x != ' '])
 
@@ -32,7 +32,7 @@ def parse_rearrangement_procedures(input_data):
     return procedures
 
 
-def move_crates(stacks, procedures):
+def crate_mover_9000(stacks, procedures):
 
     for procedure in procedures:
         for i in range(procedure[0]):
@@ -44,8 +44,25 @@ def move_crates(stacks, procedures):
     return stacks
 
 
+def crate_mover_9001(stacks, procedures):
+
+    for procedure in procedures:
+        number_of_crates_to_move = procedure[0]
+        # print(number_of_crates_to_move)
+
+        crates_to_move = stacks[procedure[1] - 1][:number_of_crates_to_move]
+        # crates_to_move.reverse()
+
+        stacks[procedure[2] - 1].reverse()
+        stacks[procedure[2] - 1].extend(crates_to_move)
+        stacks[procedure[1] - 1] = stacks[procedure[1] -
+                                          1][number_of_crates_to_move:]
+
+    return stacks
+
+
 def top_crate(stacks):
-    return [x[0] for x in stacks]
+    return ''.join([x[0 - 1] for x in stacks])
 
 
 def main():
@@ -56,9 +73,10 @@ def main():
 
     procedures = parse_rearrangement_procedures(input_data)
 
-    stacks = move_crates(stacks, procedures)
-
+    stacks = crate_mover_9001(stacks, procedures)
     print(top_crate(stacks))
+
+    # wrong TLMJSGGWH
 
 
 if __name__ == "__main__":
