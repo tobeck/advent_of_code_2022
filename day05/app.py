@@ -46,18 +46,20 @@ def crate_mover_9000(stacks, procedures):
 
 def crate_mover_9001(stacks, procedures):
 
+    # Reverser each of the stacks.
+    for list in stacks:
+        list.reverse()
+
     for procedure in procedures:
         number_of_crates_to_move = procedure[0]
-        # print(number_of_crates_to_move)
 
-        crates_to_move = stacks[procedure[1] - 1][:number_of_crates_to_move]
-        # crates_to_move.reverse()
+        crates_to_move = stacks[procedure[1] - 1][-number_of_crates_to_move:]
 
-        stacks[procedure[2] - 1].reverse()
+        # Extend the stack with the crates to move.
         stacks[procedure[2] - 1].extend(crates_to_move)
+        # Rewrite the stack which we moved crates from.
         stacks[procedure[1] - 1] = stacks[procedure[1] -
-                                          1][number_of_crates_to_move:]
-
+                                          1][:-number_of_crates_to_move]
     return stacks
 
 
@@ -73,7 +75,9 @@ def main():
 
     procedures = parse_rearrangement_procedures(input_data)
 
+    #stacks = crate_mover_9000(stacks, procedures)
     stacks = crate_mover_9001(stacks, procedures)
+
     print(top_crate(stacks))
 
     # wrong TLMJSGGWH
